@@ -9,6 +9,7 @@ import study.data_jpa.dto.MemberDto;
 import study.data_jpa.entity.Member;
 import study.data_jpa.entity.Team;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
@@ -115,6 +116,20 @@ class MemberRepositoryTest {
 
         for (MemberDto dto : memberDto) {
             System.out.println(dto);
+        }
+    }
+
+    @Test
+    public void findMembers() {
+        Member member1 = new Member("AAA", 10);
+        Member member2 = new Member("BBB", 10);
+        memberRepository.save(member1);
+        memberRepository.save(member2);
+
+        List<Member> members = memberRepository.findMembers(Arrays.asList("AAA", "BBB"));
+
+        for (Member member : members) {
+            System.out.println(member);
         }
     }
 }
