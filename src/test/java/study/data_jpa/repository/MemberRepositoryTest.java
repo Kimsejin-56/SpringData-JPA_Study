@@ -5,7 +5,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
+import study.data_jpa.dto.MemberDto;
 import study.data_jpa.entity.Member;
+import study.data_jpa.entity.Team;
 
 import java.util.List;
 
@@ -18,6 +20,8 @@ class MemberRepositoryTest {
 
     @Autowired
     MemberRepository memberRepository;
+    @Autowired
+    TeamRepository teamRepository;
 
     @Test
     public void testMember() {
@@ -97,6 +101,21 @@ class MemberRepositoryTest {
         Member findMember = result.get(0);
 
         assertThat(findMember).isEqualTo(member1);
+    }
+
+    @Test
+    public void findMemberDto() {
+        Team team = new Team("aaa");
+        teamRepository.save(team);
+
+        Member member1 = new Member("AAA", 10, team);
+        memberRepository.save(member1);
+
+        List<MemberDto> memberDto = memberRepository.findMemberDto();
+
+        for (MemberDto dto : memberDto) {
+            System.out.println(dto);
+        }
     }
 }
 
