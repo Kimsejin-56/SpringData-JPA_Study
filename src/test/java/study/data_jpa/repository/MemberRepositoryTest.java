@@ -11,6 +11,7 @@ import study.data_jpa.entity.Team;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -131,6 +132,24 @@ class MemberRepositoryTest {
         for (Member member : members) {
             System.out.println(member);
         }
+    }
+
+    @Test
+    public void returnType() {
+        Member member1 = new Member("AAA", 10);
+        Member member2 = new Member("BBB", 10);
+        memberRepository.save(member1);
+        memberRepository.save(member2);
+
+        List<Member> list = memberRepository.findListByUsername("AAA");
+        Member findMember = memberRepository.findMemberByUsername("AAA");
+        Optional<Member> optionalMemeber = memberRepository.findOptionalByUsername("AAA");
+        System.out.println("optionalMemeber = " + optionalMemeber);
+        System.out.println("findMember = " + findMember);
+        System.out.println("list = " + list);
+
+        //단건의 경우 Optional 추천 (null일수도 있으니 명시적으로 선언)
+
     }
 }
 
