@@ -1,5 +1,8 @@
 package study.data_jpa.repository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -34,6 +37,18 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     List<Member> findMembers(@Param("names") Collection names);
 
     List<Member> findListByUsername(String name); // 컬렉션
+
     Member findMemberByUsername(String name); //단건
+
     Optional<Member> findOptionalByUsername(String name); //단건 Optional
+
+    Page<Member> findByAge(int age, Pageable pageable); //count 쿼리 사용
+    //Slice<Member> findByAge(int age, Pageable pageable); //count 쿼리 사용 안함
+    //List<Member> findByAge(int age, Pageable pageable); //count 쿼리 사용 안함
+
+    //count 쿼리를 분리 가능
+    @Query(value = "select m from Member m",
+            countQuery = "select count(m) from Member m")
+    Page<Member> findMemberAllCountBy(Pageable pageable);
 }
+

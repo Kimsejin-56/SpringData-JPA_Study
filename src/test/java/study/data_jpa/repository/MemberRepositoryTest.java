@@ -3,6 +3,9 @@ package study.data_jpa.repository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 import study.data_jpa.dto.MemberDto;
@@ -149,6 +152,38 @@ class MemberRepositoryTest {
         System.out.println("list = " + list);
 
         //단건의 경우 Optional 추천 (null일수도 있으니 명시적으로 선언)
+
+    }
+
+    @Test
+    public void paging() throws Exception {
+        //given
+        memberRepository.save(new Member("member1", 10));
+        memberRepository.save(new Member("member2", 10));
+        memberRepository.save(new Member("member3", 10));
+        memberRepository.save(new Member("member4", 10));
+        memberRepository.save(new Member("member5", 10));
+
+        int age = 10;
+        PageRequest request = PageRequest.of(0, 3, Sort.by(Sort.Direction.DESC, "username"));
+
+        //when
+        Page<Member> page = memberRepository.findByAge(age, request);
+
+        List<Member> content = page.getContent();
+        long totalElements = page.getTotalElements();
+
+        for (Member member : content) {
+            System.out.println("member = " + member);
+        }
+
+        //then
+        assertThat(content.size()).isEqualTo(3); //조회된 데이터 수
+        assertThat(totalElements).isEqualTo(5); //전체 데이터 수
+        assertThat(page.getNumber()).isEqualTo(0); //페이지 번호
+        assertThat(page.getTotalPages()).isEqualTo(2); //전체 페이지 번호
+        assertThat(page.isFirst()).isTrue(); //첫번째 페이지인가?
+        assertThat(page.hasNext()).isTrue(); //다음 페이지 있는가?
 
     }
 }
