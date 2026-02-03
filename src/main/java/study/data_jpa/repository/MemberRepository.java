@@ -3,6 +3,7 @@ package study.data_jpa.repository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -55,10 +56,26 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     /**
      * 벌크성 수정은 DB에 직접 데이터를 수정해서 영속성 컨택스트와 데이터 불일치가 발생 O
-     *  - 영속성 컨택스트 초기화 시키고 엔티티를 조회하기
+     * - 영속성 컨택스트 초기화 시키고 엔티티를 조회하기
      */
     @Modifying(clearAutomatically = true)
     @Query("update Member m set m.age = m.age + 1 where m.age >= :age")
     int bulkAgePlus(@Param("age") int age);
+
+    //공통 메서드 오버라이딩
+    @Override
+    @EntityGraph(attributePaths = {"team"})
+    List<Member> findAll();
+
+    //JPQL + 엔티티 그래프
+    @EntityGraph(attributePaths = {"team"})
+    @Query("select m from Member m")
+    List<Member> findMemberEntityGraph();
+
+    //메서드 이름으로 패치 조인 적용
+    @EntityGraph(attributePaths = {"team"})
+    List<Member> findEntityGraphByUsername(@Param("username") String username);
+
 }
+
 
