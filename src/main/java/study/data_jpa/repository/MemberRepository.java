@@ -4,6 +4,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import study.data_jpa.dto.MemberDto;
@@ -50,5 +51,14 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     @Query(value = "select m from Member m",
             countQuery = "select count(m) from Member m")
     Page<Member> findMemberAllCountBy(Pageable pageable);
+
+
+    /**
+     * 벌크성 수정은 DB에 직접 데이터를 수정해서 영속성 컨택스트와 데이터 불일치가 발생 O
+     *  - 영속성 컨택스트 초기화 시키고 엔티티를 조회하기
+     */
+    @Modifying(clearAutomatically = true)
+    @Query("update Member m set m.age = m.age + 1 where m.age >= :age")
+    int bulkAgePlus(@Param("age") int age);
 }
 
