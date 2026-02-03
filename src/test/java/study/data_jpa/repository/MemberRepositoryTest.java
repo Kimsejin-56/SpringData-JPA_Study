@@ -232,7 +232,31 @@ class MemberRepositoryTest {
             System.out.println("member = " + member);
             System.out.println("teamName = " + member.getTeam().getName());
         }
+    }
 
+    @Test
+    public void queryHint() throws Exception {
+        //given
+        memberRepository.save(new Member("member1", 10));
+        em.flush();
+        em.clear();
+
+        //when
+        Member member = memberRepository.findReadOnlyByUsername("member1");
+        member.setUsername("member2"); //dirtyChecking X
+
+        em.flush(); //Update Query 실행 X
+    }
+
+    @Test
+    public void lock() throws Exception {
+        //given
+        memberRepository.save(new Member("member1", 10));
+        em.flush();
+        em.clear();
+
+        //when(쿼리만 확인)
+        List<Member> result = memberRepository.findLockByUsername("member1");
     }
 }
 
