@@ -258,5 +258,10 @@ class MemberRepositoryTest {
         //when(쿼리만 확인)
         List<Member> result = memberRepository.findLockByUsername("member1");
     }
+
+    @Test
+    public void custom() {
+        List<Member> result = memberRepository.findMemberCustom();
+    }
 }
 
