@@ -1,4 +1,4 @@
-package study.data_jpa.repository;
+package study.data_jpa.dto;
 
 //중첩 구조 처리
 public interface NestedClosedProjection {

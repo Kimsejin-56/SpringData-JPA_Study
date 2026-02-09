@@ -4,17 +4,18 @@ import jakarta.persistence.LockModeType;
 import jakarta.persistence.QueryHint;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.*;
 import org.springframework.data.repository.query.Param;
 import study.data_jpa.dto.MemberDto;
+import study.data_jpa.dto.MemberProjection;
+import study.data_jpa.dto.UsernameOnly;
 import study.data_jpa.entity.Member;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
-public interface MemberRepository extends JpaRepository<Member, Long> , MemberRepositoryCustom{
+public interface MemberRepository extends JpaRepository<Member, Long>, MemberRepositoryCustom {
     /**
      * 간단한 방식 - 메서드 이름으로 쿼리 생성
      * 권장 X - NamedQuery
@@ -82,7 +83,18 @@ public interface MemberRepository extends JpaRepository<Member, Long> , MemberRe
     List<Member> findLockByUsername(String username);
 
     List<UsernameOnly> findProjectionsByUsername(String username);
+
     <T> List<T> findProjectionsByUsername(String username, Class<T> type); //동적 Projections
+
+    @Query(value = "select * from member where username = ?", nativeQuery = true)
+    Member findByNativeQuery(String username);
+
+    //Projections 활용
+    @Query(value = "select m.member_id as id, m.username, t.name as teamName " +
+            "from member m left join team t on m.team_id = t.team_id",
+            countQuery = "select count(*) from member",
+            nativeQuery = true)
+    Page<MemberProjection> findByNativeQueryProjection(Pageable pageable);
 }
 
 

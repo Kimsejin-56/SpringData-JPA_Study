@@ -6,8 +6,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.transaction.annotation.Transactional;
-import study.data_jpa.dto.UsernameOnlyDto;
+import study.data_jpa.dto.MemberProjection;
+import study.data_jpa.dto.NestedClosedProjection;
 import study.data_jpa.entity.Member;
 import study.data_jpa.entity.Team;
 
@@ -80,5 +83,32 @@ public class RestFeatureTest {
             System.out.println("nestedClosedProjection.Team.name = " + nestedClosedProjection.getTeam().getName());
         }
         assertThat(result.size()).isEqualTo(1);
+    }
+
+    @Test
+    public void nativeQuery() {
+        //given
+        Team teamA = new Team("teamA");
+        em.persist(teamA);
+
+        Member m1 = new Member("m1", 0, teamA);
+        Member m2 = new Member("m2", 0, teamA);
+        em.persist(m1);
+        em.persist(m2);
+
+        em.flush();
+        em.clear();
+
+        //when
+        Member result = memberRepository.findByNativeQuery("m1");
+        System.out.println("member = " + result);
+
+        Page<MemberProjection> result2 = memberRepository.findByNativeQueryProjection(PageRequest.of(0, 10));
+        List<MemberProjection> content = result2.getContent();
+        for (MemberProjection memberProjection : content) {
+            System.out.println("memberProjection = " + memberProjection.getId());
+            System.out.println("memberProjection = " + memberProjection.getUsername());
+            System.out.println("memberProjection = " + memberProjection.getTeamName());
+        }
     }
 }

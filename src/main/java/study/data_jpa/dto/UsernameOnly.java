@@ -1,6 +1,4 @@
-package study.data_jpa.repository;
-
-import org.springframework.beans.factory.annotation.Value;
+package study.data_jpa.dto;
 
 // 스프링 데이터 JPA가 구현체 제공
 public interface UsernameOnly {
