@@ -82,6 +82,7 @@ public interface MemberRepository extends JpaRepository<Member, Long> , MemberRe
     List<Member> findLockByUsername(String username);
 
     List<UsernameOnly> findProjectionsByUsername(String username);
+    <T> List<T> findProjectionsByUsername(String username, Class<T> type); //동적 Projections
 }
 
 

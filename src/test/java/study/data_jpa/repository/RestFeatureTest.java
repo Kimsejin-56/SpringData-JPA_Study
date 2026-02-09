@@ -7,6 +7,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.transaction.annotation.Transactional;
+import study.data_jpa.dto.UsernameOnlyDto;
 import study.data_jpa.entity.Member;
 import study.data_jpa.entity.Team;
 
@@ -71,10 +72,10 @@ public class RestFeatureTest {
         em.clear();
 
         //when
-        List<UsernameOnly> result = memberRepository.findProjectionsByUsername("m1");
+        List<UsernameOnlyDto> result = memberRepository.findProjectionsByUsername("m1", UsernameOnlyDto.class);
 
         //then
-        for (UsernameOnly usernameOnly : result) {
+        for (UsernameOnlyDto usernameOnly : result) {
             System.out.println("usernameOnly = " + usernameOnly.getUsername());
         }
         assertThat(result.size()).isEqualTo(1);
