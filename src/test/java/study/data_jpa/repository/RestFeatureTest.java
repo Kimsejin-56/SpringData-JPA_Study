@@ -72,11 +72,12 @@ public class RestFeatureTest {
         em.clear();
 
         //when
-        List<UsernameOnlyDto> result = memberRepository.findProjectionsByUsername("m1", UsernameOnlyDto.class);
+        List<NestedClosedProjection> result = memberRepository.findProjectionsByUsername("m1", NestedClosedProjection.class);
 
         //then
-        for (UsernameOnlyDto usernameOnly : result) {
-            System.out.println("usernameOnly = " + usernameOnly.getUsername());
+        for (NestedClosedProjection nestedClosedProjection : result) {
+            System.out.println("nestedClosedProjection.username = " + nestedClosedProjection.getUsername());
+            System.out.println("nestedClosedProjection.Team.name = " + nestedClosedProjection.getTeam().getName());
         }
         assertThat(result.size()).isEqualTo(1);
     }
